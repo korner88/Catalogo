@@ -1,0 +1,25 @@
+name: Actualizar Playhub
+on:
+  schedule:
+    - cron: '0 * * * *' # Se ejecuta en el minuto 0 de cada hora
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Instalar dependencias
+        run: pip install requests
+      - name: Ejecutar Extractor
+        run: python playhub_sync.py
+      - name: Guardar mapas
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add mapa_peliculas_playhub.json mapa_series_playhub.json
+          git commit -m "Actualización horaria Playhub" || exit 0
+          git push
