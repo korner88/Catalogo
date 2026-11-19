@@ -3,6 +3,15 @@ on:
   schedule:
     - cron: '0 * * * *'
   workflow_dispatch:
+    inputs:
+      reset_show_cache:
+        description: 'Limpiar caché de Series (solo esta corrida)'
+        required: false
+        default: '0'
+        type: choice
+        options:
+          - '0'
+          - '1'
 
 permissions:
   contents: write
@@ -26,7 +35,8 @@ jobs:
         env:
           PLAYHUB_TOKEN: ${{ secrets.PLAYHUB_TOKEN }}
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
-          MAX_NEW_PER_RUN: '1200'
+          MAX_NEW_PER_RUN: '1500'
+          RESET_SHOW_CACHE: ${{ inputs.reset_show_cache || '0' }}
         run: python playhub_sync.py
       - name: Guardar mapas y caché
         run: |
