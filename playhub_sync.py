@@ -84,36 +84,42 @@ def normalizar(texto):
     return re.sub(r"[^a-z0-9]+", " ", sin_acentos.lower()).strip()
 
 
-def puntuar_candidato(cand, norm_title, release_date, year, is_movie):
+def evaluar_candidato(cand, norm_title, release_date, year, is_movie):
     cand_date = (cand.get("release_date") if is_movie else cand.get("first_air_date")) or ""
     cand_year = cand_date[:4] if len(cand_date) >= 4 else ""
 
     t1 = normalizar(cand.get("title") if is_movie else cand.get("name"))
     t2 = normalizar(cand.get("original_title") if is_movie else cand.get("original_name"))
 
-    score = 0
-    if release_date and cand_date == release_date:
-        score += 60
+    exact_date = bool(release_date and cand_date == release_date)
+    date_score = 0
+    if exact_date:
+        date_score = 60
     elif year and cand_year:
         if cand_year == year:
-            score += 25
+            date_score = 25
         elif year.isdigit() and cand_year.isdigit() and abs(int(cand_year) - int(year)) == 1:
-            score += 10
+            date_score = 10
 
+    title_score = 0
     if norm_title:
         if norm_title in (t1, t2):
-            score += 50
+            title_score = 50
         else:
             sim = max(
                 difflib.SequenceMatcher(None, norm_title, t1).ratio() if t1 else 0.0,
                 difflib.SequenceMatcher(None, norm_title, t2).ratio() if t2 else 0.0,
             )
             if sim >= 0.85:
-                score += 35
+                title_score = 35
             elif sim >= 0.70:
-                score += 20
+                title_score = 20
 
-    return score
+    return date_score + title_score, exact_date, title_score
+
+
+def puntuar_candidato(cand, norm_title, release_date, year, is_movie):
+    return evaluar_candidato(cand, norm_title, release_date, year, is_movie)[0]
 
 
 def obtener_creditos_persona(person_tmdb_id, is_movie):
@@ -169,8 +175,16 @@ def resolver_tmdb_desde_detalles(details, content_type):
 
         mejor_id, mejor_score = None, 0
         for cid, cand in candidatos.items():
-            base_score = puntuar_candidato(cand, norm_title, release_date, year, is_movie)
-            if base_score < 20:
+            base_score, exact_date, title_score = evaluar_candidato(
+                cand, norm_title, release_date, year, is_movie
+            )
+            # Evita falsos positivos por programas de entrevistas/noticias compartidos (10767=Talk, 10763=News)
+            if not is_movie and title_score < 35:
+                gids = set(cand.get("genre_ids") or [])
+                if 10767 in gids or 10763 in gids:
+                    continue
+            # Exige fecha exacta o similitud real de título (nunca solo mismo año sin título)
+            if not exact_date and title_score < 20:
                 continue
             extra_actores = conteo_actores.get(cid, 1) - 1
             score = base_score + (50 * extra_actores if extra_actores > 0 else 0)
