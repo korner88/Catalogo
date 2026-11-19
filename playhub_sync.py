@@ -339,8 +339,8 @@ if __name__ == "__main__":
     cache = cargar_cache()
     cuota = MAX_NEW_PER_RUN if MAX_NEW_PER_RUN > 0 else 10**9
 
-    cuota = procesar("Movie", "mapa_peliculas_playhub.json", cache, cuota)
+    procesar("Movie", "mapa_peliculas_playhub.json", cache, cuota)
     guardar_cache(cache)
 
-    cuota = procesar("Show", "mapa_series_playhub.json", cache, cuota)
+    procesar("Show", "mapa_series_playhub.json", cache, cuota)
     guardar_cache(cache)
