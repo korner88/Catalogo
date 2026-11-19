@@ -169,10 +169,11 @@ def resolver_tmdb_desde_detalles(details, content_type):
 
         mejor_id, mejor_score = None, 0
         for cid, cand in candidatos.items():
-            score = puntuar_candidato(cand, norm_title, release_date, year, is_movie)
+            base_score = puntuar_candidato(cand, norm_title, release_date, year, is_movie)
+            if base_score < 20:
+                continue
             extra_actores = conteo_actores.get(cid, 1) - 1
-            if extra_actores > 0:
-                score += 50 * extra_actores
+            score = base_score + (50 * extra_actores if extra_actores > 0 else 0)
             if score > mejor_score:
                 mejor_score = score
                 mejor_id = cid
@@ -315,12 +316,20 @@ def procesar(content_type, output_file, cache, cuota_restante):
                         }
 
     mapa = {}
+    conteo_tids = {}
     for u in uuids:
         tid = (cache.get(u) or {}).get("tmdb_id")
         if tid:
-            mapa[str(tid)] = u
+            tid_str = str(tid)
+            conteo_tids[tid_str] = conteo_tids.get(tid_str, 0) + 1
+            mapa[tid_str] = u
 
+    colisiones = {k: v for k, v in conteo_tids.items() if v > 1}
     print(f"[{content_type}] Nuevos resueltos: {resueltos_ahora} | Total en mapa: {len(mapa)}")
+    if colisiones:
+        sobrescritos = sum(v - 1 for v in colisiones.values())
+        top_col = sorted(colisiones.items(), key=lambda x: x[1], reverse=True)[:10]
+        print(f"[{content_type}] AVISO: {sobrescritos} duplicados sobrescritos -> top (tmdb_id, veces): {top_col}")
 
     if mapa:
         with open(output_file, "w", encoding="utf-8") as f:
@@ -337,6 +346,10 @@ if __name__ == "__main__":
         print("AVISO: TMDB_API_KEY no configurada; solo se mapearán ítems con tmdbId nativo.")
 
     cache = cargar_cache()
+    if os.environ.get("RESET_SHOW_CACHE") == "1":
+        antes = len(cache)
+        cache = {u: v for u, v in cache.items() if v.get("type") != "Show"}
+        print(f"RESET_SHOW_CACHE: eliminadas {antes - len(cache)} entradas de Show (Movie intactas: {len(cache)})")
     cuota = MAX_NEW_PER_RUN if MAX_NEW_PER_RUN > 0 else 10**9
 
     procesar("Movie", "mapa_peliculas_playhub.json", cache, cuota)
