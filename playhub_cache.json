@@ -10790,6 +10790,10 @@
     "tmdb_id": "381890",
     "type": "Movie"
   },
+  "4a9333d7-f867-47c6-b74f-64bd251639c0": {
+    "tmdb_id": "1205229",
+    "type": "Movie"
+  },
   "4a93a2b9-5a9b-4c6c-be19-ca75a4e2f6f1": {
     "tmdb_id": "381288",
     "type": "Movie"
@@ -13573,6 +13577,10 @@
   },
   "5d754601-c840-483b-842d-43275d83d544": {
     "tmdb_id": "762430",
+    "type": "Movie"
+  },
+  "5d794ac3-dd1f-4cab-9798-795a6d986014": {
+    "tmdb_id": "124097",
     "type": "Movie"
   },
   "5d7d39e2-a1c1-4eae-a426-19a9e4259a56": {
@@ -22634,7 +22642,7 @@
     "type": "Movie"
   },
   "9b08168b-0c88-4685-ab5c-db6d1d71cb13": {
-    "retries": 2,
+    "retries": 3,
     "tmdb_id": null,
     "type": "Show"
   },
@@ -31819,7 +31827,7 @@
     "type": "Movie"
   },
   "db0169c6-a4b6-40c1-b858-df402f76d2cb": {
-    "retries": 2,
+    "retries": 3,
     "tmdb_id": null,
     "type": "Show"
   },
