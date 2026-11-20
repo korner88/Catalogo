@@ -5912,7 +5912,7 @@
     "type": "Show"
   },
   "28986b99-ec2a-430b-ad59-0388c4c2c9d5": {
-    "retries": 2,
+    "retries": 3,
     "tmdb_id": null,
     "type": "Show"
   },
@@ -9181,7 +9181,7 @@
     "type": "Movie"
   },
   "3f97c8f8-d04b-4645-b6c5-53a91e7ccce1": {
-    "retries": 2,
+    "retries": 3,
     "tmdb_id": null,
     "type": "Show"
   },
@@ -9690,7 +9690,7 @@
     "type": "Movie"
   },
   "43210765-9934-436b-99dd-1f2d46c6002b": {
-    "retries": 2,
+    "retries": 3,
     "tmdb_id": null,
     "type": "Show"
   },
@@ -13584,7 +13584,7 @@
     "type": "Show"
   },
   "5d8a08d4-9278-444c-a34a-21e389fb0eff": {
-    "retries": 2,
+    "retries": 3,
     "tmdb_id": null,
     "type": "Show"
   },
@@ -22634,7 +22634,7 @@
     "type": "Movie"
   },
   "9b08168b-0c88-4685-ab5c-db6d1d71cb13": {
-    "retries": 1,
+    "retries": 2,
     "tmdb_id": null,
     "type": "Show"
   },
@@ -25951,7 +25951,7 @@
     "type": "Movie"
   },
   "b2046a9b-13c8-470b-9f9e-3cf08ffbdcf0": {
-    "retries": 2,
+    "retries": 3,
     "tmdb_id": null,
     "type": "Show"
   },
@@ -31819,7 +31819,7 @@
     "type": "Movie"
   },
   "db0169c6-a4b6-40c1-b858-df402f76d2cb": {
-    "retries": 1,
+    "retries": 2,
     "tmdb_id": null,
     "type": "Show"
   },
